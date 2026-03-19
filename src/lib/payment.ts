@@ -23,8 +23,8 @@ export function getCheckoutUrl(variantId: string, userEmail: string): string {
     return `/api/webhooks/lemonsqueezy/mock?email=${encodeURIComponent(userEmail)}&variant=${variantId}`;
   }
 
-  const storeId = process.env.LEMONSQUEEZY_STORE_ID;
-  return `https://${storeId}.lemonsqueezy.com/checkout/buy/${variantId}?checkout[email]=${encodeURIComponent(userEmail)}&embed=1`;
+  const storeSlug = process.env.LEMONSQUEEZY_STORE_SLUG ?? "forgetools";
+  return `https://${storeSlug}.lemonsqueezy.com/checkout/buy/${variantId}?checkout[email]=${encodeURIComponent(userEmail)}&embed=1`;
 }
 
 /**
