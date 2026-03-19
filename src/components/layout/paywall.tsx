@@ -122,11 +122,14 @@ export function Paywall({
               </ul>
               <Button
                 className="w-full"
-                onClick={() => {
-                  // In mock mode, this hits the mock payment endpoint
-                  // In production, this opens Lemon Squeezy checkout
-                  const checkoutUrl = `/api/webhooks/lemonsqueezy/mock?email=${encodeURIComponent(session?.user?.email ?? "")}`;
-                  window.location.href = checkoutUrl;
+                onClick={async () => {
+                  // Fetch checkout URL from server (handles mock vs real LS)
+                  const email = session?.user?.email ?? "";
+                  const res = await fetch(`/api/checkout?email=${encodeURIComponent(email)}`);
+                  const data = await res.json();
+                  if (data.url) {
+                    window.location.href = data.url;
+                  }
                 }}
               >
                 <CreditCard className="h-4 w-4 mr-2" />
