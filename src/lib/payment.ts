@@ -49,6 +49,15 @@ export function verifyWebhookSignature(
 
 /**
  * Parse Lemon Squeezy webhook event
+ *
+ * LS webhook payload structure:
+ * {
+ *   "meta": { "event_name": "order_created", ... },
+ *   "data": {
+ *     "id": "...",
+ *     "attributes": { "user_email": "...", "status": "paid", ... }
+ *   }
+ * }
  */
 export interface LemonSqueezyEvent {
   event_name: string;
@@ -66,7 +75,25 @@ export interface LemonSqueezyEvent {
 
 export function parseWebhookEvent(body: string): LemonSqueezyEvent | null {
   try {
-    return JSON.parse(body) as LemonSqueezyEvent;
+    const raw = JSON.parse(body);
+
+    // LS puts event_name in meta.event_name, normalize it
+    const eventName =
+      raw.meta?.event_name ?? raw.event_name ?? "";
+
+    // LS puts attributes under data.attributes
+    const attributes = raw.data?.attributes ?? {};
+
+    return {
+      event_name: eventName,
+      data: {
+        attributes: {
+          user_email: attributes.user_email ?? "",
+          status: attributes.status ?? "",
+          first_order_item: attributes.first_order_item,
+        },
+      },
+    };
   } catch {
     return null;
   }
