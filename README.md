@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Forgetool Boilerplate
 
-## Getting Started
+Payment-ready template for building Micro-SaaS tools. Clone this to start a new product.
 
-First, run the development server:
+**GitHub**: https://github.com/wangbo23-code/forgetool-boilerplate
+
+## What's Included
+
+This boilerplate provides a complete infrastructure layer so you only need to write business logic in `src/app/tool/`.
+
+### Built-In Features
+
+| Feature | Implementation |
+|---------|---------------|
+| **Authentication** | NextAuth.js 5 + Google OAuth (+ demo mode for dev) |
+| **Payments** | Lemon Squeezy integration + webhook handler |
+| **Credits System** | Signup free credits + per-use consumption |
+| **Paywall** | Component that gates features behind login + credits |
+| **Database** | Supabase (PostgreSQL) with in-memory mock fallback |
+| **Landing Page** | Hero + features + pricing sections |
+| **Legal Pages** | Terms of Service + Privacy Policy |
+| **Mock Mode** | Full local dev without any external services |
+
+### Protected Files (DO NOT MODIFY)
+
+- `src/lib/auth.ts` — authentication logic
+- `src/lib/payment.ts` — Lemon Squeezy integration
+- `src/app/api/webhooks/` — payment webhook routes
+- `src/app/layout.tsx` — root layout
+
+### Sandbox Directory
+
+All business logic goes in `src/app/tool/`. This is where you and AI build the product-specific features.
+
+## How to Use
+
+### 1. Clone for a new product
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp -r boilerplate/ <product-name>
+cd <product-name>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Customize config
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Edit `src/lib/config.ts` with your product name, tagline, pricing, and features.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Build your tool
 
-## Learn More
+Write your business logic in `src/app/tool/page.tsx` and `src/app/api/tool/analyze/route.ts`.
 
-To learn more about Next.js, take a look at the following resources:
+### 4. Deploy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+git init && git add . && git commit -m "Init from boilerplate"
+gh repo create <product-name> --private --source=. --push
+vercel --yes
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack
 
-## Deploy on Vercel
+- **Framework**: Next.js 16 (App Router) + TypeScript strict
+- **UI**: Shadcn UI + Tailwind CSS 4
+- **Auth**: NextAuth.js 5 (Google OAuth)
+- **DB**: Supabase (PostgreSQL)
+- **Payments**: Lemon Squeezy
+- **AI**: OpenRouter API (model configurable)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Development
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm install
+npm run dev
+# Open http://localhost:3000
+# Everything works in mock mode — no credentials needed
+```
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── page.tsx                  # Landing page (customizable)
+│   ├── tool/page.tsx             # YOUR BUSINESS LOGIC HERE
+│   ├── pricing/page.tsx          # Pricing page
+│   ├── auth/signin/page.tsx      # Login page
+│   ├── terms/page.tsx            # Terms of Service
+│   ├── privacy/page.tsx          # Privacy Policy
+│   └── api/
+│       ├── auth/[...nextauth]/   # Auth routes (protected)
+│       ├── tool/analyze/         # YOUR API ENDPOINT HERE
+│       ├── credits/              # Credit balance
+│       ├── checkout/             # Payment checkout
+│       └── webhooks/             # Webhook handler (protected)
+├── components/
+│   ├── layout/                   # Header, Footer, Paywall
+│   ├── auth/                     # SignIn button
+│   └── ui/                       # Shadcn UI components
+└── lib/
+    ├── auth.ts                   # Auth setup (protected)
+    ├── payment.ts                # Payment logic (protected)
+    ├── db.ts                     # Database layer
+    ├── credits.ts                # Credit system
+    ├── config.ts                 # Site configuration (customize this)
+    └── utils.ts                  # Utilities
+```
+
+## Products Built from This Boilerplate
+
+| Product | Domain |
+|---------|--------|
+| StableShift | stableshift.forgetool.co |
+| TarotAI | tarot.forgetool.co |
+| LoveFate | lovefate.forgetool.co |
+| SoulReport | soul.forgetool.co |
+
+## Part of Matrix-Forge
+
+This boilerplate is part of the Matrix-Forge Micro-SaaS production system.
