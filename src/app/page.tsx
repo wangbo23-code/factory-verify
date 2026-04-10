@@ -13,7 +13,7 @@ import { ArrowRight, Zap, Shield, Sparkles, CheckCircle } from "lucide-react";
 export default function HomePage() {
   return (
     <div className="container mx-auto max-w-5xl px-4">
-      {/* Hero */}
+      {/* Hero + BLUF */}
       <section className="py-20 text-center">
         <Badge variant="secondary" className="mb-4">
           AI-Powered Tool
@@ -21,9 +21,15 @@ export default function HomePage() {
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
           {siteConfig.hero.title}
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
           {siteConfig.hero.subtitle}
         </p>
+        {/* [GEO] BLUF — core definition for AI extraction */}
+        {siteConfig.hero.bluf && (
+          <p className="text-base text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
+            {siteConfig.hero.bluf}
+          </p>
+        )}
         <div className="flex gap-4 justify-center">
           <Link href="/tool">
             <Button size="lg">
@@ -42,6 +48,36 @@ export default function HomePage() {
         </p>
       </section>
 
+      {/* [GEO] Use Cases — extractable answer blocks */}
+      {siteConfig.useCases.length > 0 && (
+        <section className="py-16">
+          <h2 className="text-2xl font-bold text-center mb-4">
+            Common Problems {siteConfig.name} Solves
+          </h2>
+          <p className="text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
+            Each solution is AI-generated based on proven methods. Describe your
+            problem and get a personalized result in seconds.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-6">
+            {siteConfig.useCases.map((item) => (
+              <Card key={item.problem}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg">{item.problem}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <p className="text-sm font-medium text-primary">
+                    Solution: {item.solution}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {item.detail}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Features */}
       <section className="py-16">
         <h2 className="text-2xl font-bold text-center mb-8">
@@ -54,8 +90,8 @@ export default function HomePage() {
               <CardTitle className="text-lg">Lightning Fast</CardTitle>
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">
-              Get results in seconds, not hours. AI does the heavy lifting so you
-              don&apos;t have to.
+              Get results in seconds, not hours. AI does the heavy lifting so
+              you don&apos;t have to.
             </CardContent>
           </Card>
           <Card>
@@ -64,8 +100,8 @@ export default function HomePage() {
               <CardTitle className="text-lg">Reliable Output</CardTitle>
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">
-              Consistent, professional quality every time. Tested and refined for
-              real-world use.
+              Consistent, professional quality every time. Tested and refined
+              for real-world use.
             </CardContent>
           </Card>
           <Card>
@@ -81,11 +117,43 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* [GEO] Differentiator — answer block for comparison queries */}
+      {siteConfig.differentiator.content && (
+        <section className="py-16">
+          <h2 className="text-2xl font-bold text-center mb-4">
+            {siteConfig.differentiator.title}
+          </h2>
+          <p className="text-muted-foreground text-center mb-10 max-w-3xl mx-auto leading-relaxed">
+            {siteConfig.differentiator.content}
+          </p>
+          {siteConfig.differentiator.comparisons.length > 0 && (
+            <div className="max-w-2xl mx-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-3 font-semibold">Alternative</th>
+                    <th className="text-left py-3 font-semibold">
+                      {siteConfig.name} Difference
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {siteConfig.differentiator.comparisons.map((c) => (
+                    <tr key={c.vs} className="border-b">
+                      <td className="py-3 text-muted-foreground">{c.vs}</td>
+                      <td className="py-3">{c.difference}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      )}
+
       {/* How It Works */}
       <section className="py-16">
-        <h2 className="text-2xl font-bold text-center mb-4">
-          How It Works
-        </h2>
+        <h2 className="text-2xl font-bold text-center mb-4">How It Works</h2>
         <p className="text-muted-foreground text-center mb-10 max-w-xl mx-auto">
           Get your results in three simple steps.
         </p>
@@ -96,7 +164,9 @@ export default function HomePage() {
                 {item.step}
               </div>
               <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-              <p className="text-sm text-muted-foreground">{item.description}</p>
+              <p className="text-sm text-muted-foreground">
+                {item.description}
+              </p>
             </div>
           ))}
         </div>
@@ -107,11 +177,15 @@ export default function HomePage() {
         <div className="grid sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
           <div>
             <p className="text-3xl font-bold">Fast</p>
-            <p className="text-sm text-muted-foreground">Results in under 30s</p>
+            <p className="text-sm text-muted-foreground">
+              Results in under 30s
+            </p>
           </div>
           <div>
             <p className="text-3xl font-bold">Accurate</p>
-            <p className="text-sm text-muted-foreground">AI-powered analysis</p>
+            <p className="text-sm text-muted-foreground">
+              AI-powered analysis
+            </p>
           </div>
           <div>
             <p className="text-3xl font-bold">Simple</p>
@@ -124,7 +198,7 @@ export default function HomePage() {
       <section className="py-16 text-center">
         <h2 className="text-2xl font-bold mb-2">Simple Pricing</h2>
         <p className="text-muted-foreground mb-8">
-          Try free, pay only when you need more.
+          Try free, pay only when you need more. Credits never expire.
         </p>
         <Card className="max-w-sm mx-auto">
           <CardHeader>
@@ -167,11 +241,32 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* [GEO] External authority links */}
+      {siteConfig.authorityLinks.length > 0 && (
+        <section className="py-8 text-center text-sm text-muted-foreground">
+          <p>
+            {siteConfig.name} is built on research and methods from{" "}
+            {siteConfig.authorityLinks.map((link, i) => (
+              <span key={link.url}>
+                {i > 0 && (i === siteConfig.authorityLinks.length - 1 ? ", and " : ", ")}
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  {link.label}
+                </a>
+              </span>
+            ))}
+            .
+          </p>
+        </section>
+      )}
+
       {/* Final CTA */}
       <section className="py-16 text-center">
-        <h2 className="text-2xl font-bold mb-4">
-          Ready to get started?
-        </h2>
+        <h2 className="text-2xl font-bold mb-4">Ready to get started?</h2>
         <p className="text-muted-foreground mb-6">
           Try {siteConfig.name} free — no credit card required.
         </p>

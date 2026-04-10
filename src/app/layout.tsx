@@ -17,8 +17,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const metaTitle = siteConfig.seo.metaTitle || `${siteConfig.name} — ${siteConfig.hero.subtitle}`;
-const metaDescription = siteConfig.seo.metaDescription || siteConfig.description;
+const metaTitle =
+  siteConfig.seo.metaTitle ||
+  `${siteConfig.name} — ${siteConfig.hero.subtitle}`;
+const metaDescription =
+  siteConfig.seo.metaDescription || siteConfig.description;
 
 export const metadata: Metadata = {
   title: {
@@ -27,8 +30,8 @@ export const metadata: Metadata = {
   },
   description: metaDescription,
   keywords: siteConfig.seo?.keywords ?? [],
-  authors: [{ name: "ForgeTools" }],
-  creator: "ForgeTools",
+  authors: [{ name: siteConfig.organization.name }],
+  creator: siteConfig.organization.name,
   metadataBase: new URL(siteConfig.url),
   alternates: {
     canonical: "/",
@@ -57,18 +60,41 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  // [GEO] Publication dates
+  other: {
+    "article:published_time": `${siteConfig.dates.published}T00:00:00Z`,
+    "article:modified_time": new Date().toISOString(),
+  },
 };
 
-// JSON-LD: SoftwareApplication + FAQPage structured data
+// [GEO] JSON-LD: Organization + SoftwareApplication + FAQPage + Article + Breadcrumb
 function JsonLd() {
+  const now = new Date().toISOString().split("T")[0];
+
+  const organization = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: siteConfig.organization.name,
+    url: siteConfig.organization.url,
+    ...(siteConfig.organization.sameAs.length > 0 && {
+      sameAs: siteConfig.organization.sameAs,
+    }),
+  };
+
   const softwareApp = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: siteConfig.name,
-    description: metaDescription,
+    description: siteConfig.description,
     url: siteConfig.url,
     applicationCategory: "WebApplication",
     operatingSystem: "Any",
+    author: {
+      "@type": "Organization",
+      name: siteConfig.organization.name,
+    },
+    datePublished: siteConfig.dates.published,
+    dateModified: now,
     offers: {
       "@type": "Offer",
       price: siteConfig.pricing.price.replace("$", ""),
@@ -89,8 +115,38 @@ function JsonLd() {
     })),
   };
 
+  const article = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: metaTitle,
+    description: siteConfig.description,
+    author: {
+      "@type": "Organization",
+      name: siteConfig.organization.name,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.organization.name,
+    },
+    datePublished: siteConfig.dates.published,
+    dateModified: now,
+    mainEntityOfPage: { "@type": "WebPage", "@id": siteConfig.url },
+  };
+
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApp) }}
@@ -98,6 +154,14 @@ function JsonLd() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPage) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(article) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
       />
     </>
   );
